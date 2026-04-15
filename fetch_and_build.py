@@ -57,7 +57,7 @@ def build_html(issues, timeline):
     now = datetime.now(timezone(timedelta(hours=-3)))
     today = now.strftime("%Y-%m-%d")
     gen_at = now.strftime("%Y-%m-%dT%H:%M:%S-03:00")
-    with open("turbi_pm_v2_template.html", "r", encoding="utf-8") as f:
+    with open("turbi_pm_v2.html", "r", encoding="utf-8") as f:
         html = f.read()
     html = html.replace("__ISSUES_JSON__", json.dumps(issues, ensure_ascii=False))
     html = html.replace("__TIMELINE_JSON__", json.dumps(timeline, ensure_ascii=False))
