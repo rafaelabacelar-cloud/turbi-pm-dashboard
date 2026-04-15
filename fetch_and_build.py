@@ -38,13 +38,14 @@ FIELDS = "summary,status,assignee,priority,issuetype,project,created,updated"
 
 # ── Jira fetcher ─────────────────────────────────────────────────────────
 def jira_search(jql: str, max_results: int = 100) -> list[dict]:
-    params = urllib.parse.urlencode({
+    # Atlassian migrou para POST /rest/api/3/search/jql (GET /search retorna 410)
+    url = f"{JIRA_BASE}/rest/api/3/search/jql"
+    payload = json.dumps({
         "jql": jql,
         "maxResults": max_results,
-        "fields": FIELDS,
-    })
-    url = f"{JIRA_BASE}/rest/api/3/search?{params}"
-    req = urllib.request.Request(url, headers=HEADERS)
+        "fields": FIELDS.split(","),
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=payload, headers=HEADERS, method="POST")
     with urllib.request.urlopen(req) as resp:
         data = json.loads(resp.read())
     return data.get("issues", [])
